@@ -1,5 +1,23 @@
 # Content and release review
 
+## iOS beta disclosure update - 2026-11-09
+
+The existing Android disclosure now also covers advertising-enabled iOS builds.
+The signed iOS 1.0.1 (4) test build uses Google sample ad units with real native
+app identification; resolved GMA 13.11.0 and UMP 3.1.0 privacy manifests were
+inspected in the IPA. The earlier iOS 1.0.0 (3) build has AdMob disabled. Policy
+scope states this distinction and the iOS ATT/IDFA system permission controls.
+Test ads do not establish that SDK data processing is off. This is source/native
+configuration evidence, not an actual iPhone/network/consent pass. App Store
+privacy declarations for the later advertising release still require review.
+The website update does not fix or diagnose Apple's generic TestFlight 422.
+
+References: https://developers.google.com/admob/ios/privacy/idfa and
+https://developers.google.com/admob/ios/privacy/data-disclosure (the latter
+currently describes SDK 13.12.0; do not mislabel the resolved 13.11.0 binary).
+
+## Historical Android review
+
 Content reviewed against the Android game configuration on **2026-10-27** and the providers' current primary documentation. The public developer name and contact email were supplied for this site. Use the same developer identity in the store listing, or update the policy before release.
 
 ## Inspected facts
