@@ -1,5 +1,12 @@
 # Content and release review
 
+## Terms of Service ? 2026-11-11
+
+Added bilingual app-specific terms, keeping mandatory consumer rights and avoiding exclusive jurisdiction, blanket liability waivers, paid purchases or active ranked-service promises. Developer identity/contact reuse the existing public site. Terms have their own update date; privacy policy content/date is unchanged. Terms do not replace consent, privacy disclosures or legal review. Before shipping the new account/ranked build, separately update the older privacy/deletion statements to reflect actual UGS identity and storage.
+
+Reference: https://support.google.com/googleplay/android-developer/answer/17594752
+
+
 ## iOS beta disclosure update - 2026-11-09
 
 The existing Android disclosure now also covers advertising-enabled iOS builds.

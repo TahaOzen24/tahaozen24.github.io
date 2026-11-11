@@ -60,15 +60,18 @@ def main():
             total+=1
     tr=parsed[PUBLIC/'block-mirage/privacy/index.html'];en=parsed[PUBLIC/'block-mirage/privacy/en/index.html']
     assert tr.ids==en.ids,'Translated policies must keep the same sections'
+    assert parsed[PUBLIC/'block-mirage/terms/index.html'].ids==parsed[PUBLIC/'block-mirage/terms/en/index.html'].ids
+    assert 'rights' in parsed[PUBLIC/'block-mirage/terms/index.html'].ids
+    assert '/block-mirage/terms/' in parsed[PUBLIC/'index.html'].links
     ad=(PUBLIC/'app-ads.txt').read_bytes()
     assert ad==f"google.com, {CONFIG['publisher']}, DIRECT, f08c47fec0942fa0\n".encode(),ad
     assert 'Allow: /' in (PUBLIC/'robots.txt').read_text()
     sitemap=ET.parse(PUBLIC/'sitemap.xml')
     urls=[n.text for n in sitemap.iter('{http://www.sitemaps.org/schemas/sitemap/0.9}loc')]
-    assert len(urls)==8 and len(set(urls))==8
+    assert len(urls)==10 and len(set(urls))==10
     for url in urls:
         assert url.startswith(CONFIG['origin']+'/') and resolve(urlsplit(url).path).is_file(),url
     assert not any(p.is_symlink() for p in PUBLIC.rglob('*'))
-    print(f'SITE CHECKS PASS: {len(parsed)} HTML pages, {total} internal links, 8 sitemap URLs, matching TR/EN sections, root app-ads.txt and no active third-party scripts/forms')
+    print(f'SITE CHECKS PASS: {len(parsed)} HTML pages, {total} internal links, 10 sitemap URLs, matching TR/EN sections, root app-ads.txt and no active third-party scripts/forms')
 
 if __name__=='__main__':main()

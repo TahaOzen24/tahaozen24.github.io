@@ -7,6 +7,7 @@ import json
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = json.loads((ROOT / 'site.json').read_text(encoding='utf-8'))
 PUBLIC = ROOT / 'public'
+TERMS = json.loads((ROOT / 'terms.json').read_text(encoding='utf-8'))
 ORIGIN = CONFIG['origin']
 EMAIL = CONFIG['email']
 DEVELOPER = CONFIG['developer']
@@ -92,7 +93,7 @@ def route(kind, lang='tr'):
 
 def shell(title, description, body, path='/', lang='tr', alternate=None, current='home'):
     english=lang=='en'
-    nav=[('privacy','Privacy' if english else 'Gizlilik'),('support','Support' if english else 'Destek'),('data-deletion','Your data' if english else 'Verilerin')]
+    nav=[('terms','Terms' if english else 'Ko?ullar'),('privacy','Privacy' if english else 'Gizlilik'),('support','Support' if english else 'Destek'),('data-deletion','Your data' if english else 'Verilerin')]
     nav_html=''.join(f'<a href="{route(k,lang)}"'+(' aria-current="page"' if current==k else '')+f'>{v}</a>' for k,v in nav)
     alternate_tag=f'<link rel="alternate" hreflang="{"tr" if english else "en"}" href="{ORIGIN}{alternate}">' if alternate else ''
     language=f'<a class="language" href="{alternate}" lang="{"tr" if english else "en"}">{"Türkçe" if english else "English"}</a>' if alternate else '<a class="language" href="/block-mirage/privacy/en/" lang="en">English</a>'
@@ -111,7 +112,7 @@ def shell(title, description, body, path='/', lang='tr', alternate=None, current
 def document(kind, lang, title, lead, sections):
     toc=''.join(f'<a href="#{key}">{escape(heading)}</a>' for key,heading,_ in sections)
     content=''.join(f'<section id="{key}"><h2>{escape(heading)}</h2>{html}</section>' for key,heading,html in sections)
-    date=CONFIG['updated']
+    date=TERMS['updated'] if kind=='terms' else CONFIG['updated']
     body=f'''<div class="document-heading"><p class="eyebrow">Block Mirage / {DEVELOPER}</p><h1>{title}</h1><p class="lead">{lead}</p><p class="date">{'Last updated' if lang=='en' else 'Son güncelleme'}: <time datetime="{date}">{date}</time></p></div>
 <div class="document-grid"><aside class="toc" aria-label="{'On this page' if lang=='en' else 'Bu sayfada'}"><strong>{'On this page' if lang=='en' else 'Bu sayfada'}</strong>{toc}</aside><article class="document">{content}<div class="contact-note"><span>{'Need help?' if lang=='en' else 'Sorun mu var?'}</span>{link(MAIL,EMAIL)}</div></article></div>'''
     alternate=route(kind,'tr' if lang=='en' else 'en')
@@ -128,11 +129,11 @@ def build():
     write('index.html',shell('Gizlilik ve destek','Block Mirage gizlilik politikası, veri tercihleri ve destek bağlantıları.',HOME))
     write('block-mirage/index.html',shell('Gizlilik ve destek','Block Mirage gizlilik politikası, veri tercihleri ve destek bağlantıları.',HOME,'/block-mirage/'))
     for lang in ('tr','en'):
-        choices=[('privacy','Privacy policy' if lang=='en' else 'Gizlilik politikası','How the game and its service providers handle information.' if lang=='en' else 'Oyun ve hizmet sağlayıcılarının bilgileri nasıl işlediğine dair açıklamalar.',PRIVACY[lang]),('support','Support' if lang=='en' else 'Destek','Contact the developer about gameplay, ads or privacy.' if lang=='en' else 'Oynanış, reklamlar veya gizlilik konularında geliştiriciye ulaşın.',SUPPORT[lang]),('data-deletion','Data deletion and choices' if lang=='en' else 'Veri silme ve tercihler','Manage local saves, advertising choices and support requests.' if lang=='en' else 'Yerel kayıtları, reklam tercihlerini ve veri taleplerini yönetin.',DELETION[lang])]
+        choices=[('terms','Terms of Service' if lang=='en' else 'Kullan?m Ko?ullar?','Conditions for using Block Mirage, ads, saves and consumer rights.' if lang=='en' else 'Block Mirage kullan?m?, reklamlar, kay?tlar ve t?ketici haklar?na ili?kin ko?ullar.',TERMS[lang]),('privacy','Privacy policy' if lang=='en' else 'Gizlilik politikası','How the game and its service providers handle information.' if lang=='en' else 'Oyun ve hizmet sağlayıcılarının bilgileri nasıl işlediğine dair açıklamalar.',PRIVACY[lang]),('support','Support' if lang=='en' else 'Destek','Contact the developer about gameplay, ads or privacy.' if lang=='en' else 'Oynanış, reklamlar veya gizlilik konularında geliştiriciye ulaşın.',SUPPORT[lang]),('data-deletion','Data deletion and choices' if lang=='en' else 'Veri silme ve tercihler','Manage local saves, advertising choices and support requests.' if lang=='en' else 'Yerel kayıtları, reklam tercihlerini ve veri taleplerini yönetin.',DELETION[lang])]
         for kind,title,lead,sections in choices:write(route(kind,lang).lstrip('/')+'index.html',document(kind,lang,title,lead,sections))
     write('app-ads.txt',f"google.com, {CONFIG['publisher']}, DIRECT, f08c47fec0942fa0\n")
-    paths=['/','/block-mirage/']+[route(kind,lang) for kind in ('privacy','support','data-deletion') for lang in ('tr','en')]
-    write('sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(f'<url><loc>{ORIGIN}{p}</loc><lastmod>{CONFIG["updated"]}</lastmod></url>' for p in paths)+'</urlset>\n')
+    paths=['/','/block-mirage/']+[route(kind,lang) for kind in ('privacy','support','data-deletion','terms') for lang in ('tr','en')]
+    write('sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(f'<url><loc>{ORIGIN}{p}</loc><lastmod>{TERMS['updated'] if '/terms/' in p or p in ('/', '/block-mirage/') else CONFIG['updated']}</lastmod></url>' for p in paths)+'</urlset>\n')
     write('robots.txt',f'User-agent: *\nAllow: /\nSitemap: {ORIGIN}/sitemap.xml\n')
     write('.nojekyll','')
     write('404.html',shell('Sayfa bulunamadı','Aradığınız sayfa bulunamadı.','<section class="document-heading"><p class="eyebrow">404</p><h1>Bu sayfa burada değil.</h1><p class="lead">Gizlilik ve destek merkezine dönebilirsin.</p><a class="button primary" href="/">Ana sayfaya dön</a></section>','/404.html'))

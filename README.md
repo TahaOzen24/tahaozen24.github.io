@@ -6,6 +6,9 @@ Contact: **karagozpasha24@gmail.com**.
 
 ## Published links
 
+- Terms of Service (Turkish): https://tahaozen24.github.io/block-mirage/terms/
+- Terms of Service (English): https://tahaozen24.github.io/block-mirage/terms/en/
+
 - Developer website: https://tahaozen24.github.io/
 - Privacy policy (Turkish): https://tahaozen24.github.io/block-mirage/privacy/
 - Privacy policy (English): https://tahaozen24.github.io/block-mirage/privacy/en/
@@ -19,7 +22,7 @@ The root-level Pages repository is deliberate: AdMob discovers `app-ads.txt` fro
 
 No npm packages, external fonts, tracking libraries, cookies set by site code, login, web forms or runtime JavaScript are used. GitHub Pages handles hosting and may process connection/security logs under its own privacy statement.
 
-1. Update `site.json` and the reviewed bilingual content in `tools/build_site.py`.
+1. Update `terms.json` for the terms, and `site.json` and the reviewed bilingual content in `tools/build_site.py`.
 2. Run `python tools/build_site.py`.
 3. Run `python tools/validate_site.py`.
 4. Review changes to `public/` and commit them. The Pages workflow rebuilds, validates and deploys `public/` on a push to `main`.
